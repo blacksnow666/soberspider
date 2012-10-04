@@ -6,5 +6,6 @@ public interface DatabaseService {
 
 	List<String> listTables();
 
-	List<String> sortByCreationOrder(List<String> list);
+	List<String> sortTablesByCreationOrder(List<String> list);
+
 }

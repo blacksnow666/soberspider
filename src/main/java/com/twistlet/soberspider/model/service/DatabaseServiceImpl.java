@@ -18,7 +18,6 @@ public class DatabaseServiceImpl implements DatabaseService {
 	private final DataSource dataSource;
 
 	public DatabaseServiceImpl(final DataSource dataSource) {
-		super();
 		this.dataSource = dataSource;
 	}
 
@@ -41,12 +40,13 @@ public class DatabaseServiceImpl implements DatabaseService {
 				final String table = rs.getString("TABLE_NAME");
 				list.add(table);
 			}
+			rs.close();
 			return list;
 		}
 	}
 
 	@Override
-	public List<String> sortByCreationOrder(final List<String> list) {
+	public List<String> sortTablesByCreationOrder(final List<String> list) {
 		// TODO Auto-generated method stub
 		return null;
 	}
