@@ -16,9 +16,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class DatabaseServiceImpl implements DatabaseService {
 
 	private final DataSource dataSource;
+	private final TableService tableService;
 
-	public DatabaseServiceImpl(final DataSource dataSource) {
+	public DatabaseServiceImpl(final DataSource dataSource, final TableService tableService) {
 		this.dataSource = dataSource;
+		this.tableService = tableService;
 	}
 
 	@Override
@@ -47,8 +49,21 @@ public class DatabaseServiceImpl implements DatabaseService {
 
 	@Override
 	public List<String> sortTablesByCreationOrder(final List<String> list) {
-		// TODO Auto-generated method stub
-		return null;
+		final List<String> listOk = new ArrayList<>();
+		final List<String> listToBeProcessed = new ArrayList<>(list);
+		while (listToBeProcessed.size() > 0) {
+			final List<String> listAdded = new ArrayList<>();
+			for (final String table : listToBeProcessed) {
+				final List<String> deps = tableService.listTableDependenciesForTable(table);
+				deps.remove(table);
+				if (listOk.containsAll(deps)) {
+					listAdded.add(table);
+					listOk.add(table);
+				}
+			}
+			listToBeProcessed.removeAll(listAdded);
+		}
+		return listOk;
 	}
 
 }

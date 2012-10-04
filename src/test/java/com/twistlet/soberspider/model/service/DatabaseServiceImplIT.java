@@ -22,16 +22,18 @@ public class DatabaseServiceImplIT extends AbstractJUnit4SpringContextTests {
 	DataSource dataSource;
 
 	DatabaseService databaseService;
+	TableService tableService;
 
 	@Before
 	public void init() {
-		databaseService = new DatabaseServiceImpl(dataSource);
+		tableService = new TableServiceImpl(dataSource);
+		databaseService = new DatabaseServiceImpl(dataSource, tableService);
 	}
 
 	@Test
 	public void testListTablesItem() {
 		final List<String> actual = databaseService.listTables();
-		final List<String> expected = generateExpected();
+		final List<String> expected = generateExpectedTables();
 		assertEquals(expected, actual);
 	}
 
@@ -41,7 +43,40 @@ public class DatabaseServiceImplIT extends AbstractJUnit4SpringContextTests {
 		assertEquals(101, actual.size());
 	}
 
-	private List<String> generateExpected() {
+	@Test
+	public void testListTablesOrdered() {
+		final List<String> tables = generateExpectedTables();
+		final List<String> actual = databaseService.sortTablesByCreationOrder(tables);
+		final List<String> expected = generateTablesSortedByDependency();
+		assertEquals(expected, actual);
+
+	}
+
+	private List<String> generateTablesSortedByDependency() {
+		final String[] tables = { "calendar_event", "dummy", "ep_user", "fais_account_code", "pkk", "portal_user",
+				"ref_access_level", "ref_access_type", "ref_agency", "ref_bank", "ref_committee_type", "ref_company_type",
+				"ref_country", "ref_delivery_field", "ref_field", "ref_file", "ref_finance_group", "ref_item_category",
+				"ref_pkk_category", "ref_pkk_limit", "ref_position", "ref_price", "ref_procurement_activiti",
+				"ref_procurement_budget_source", "ref_procurement_category", "ref_procurement_purpose", "ref_race", "ref_state",
+				"ref_title", "ref_unit_of_measurement", "ref_velocity_mail_template", "ref_vendor_parameter_dasar",
+				"ref_vendor_parameter_dokumen", "ref_vendor_parameter_identifikasi", "role", "user", "user_configuration",
+				"user_role", "ut_menu", "vendor", "vendor_bidang", "vendor_board", "vendor_dokumen", "vendor_equity",
+				"vendor_experience", "vendor_ownership", "vendor_subscription_sms", "vendor_utility", "committee_master",
+				"contract", "contract_vendor", "inbox", "item", "item_account_need", "item_agencies", "item_committee",
+				"item_parameter", "item_requisition", "item_specification_master", "job_userrole", "menu_role", "node_access",
+				"node_access_state", "node_committee", "node_contract", "node_item", "node_user", "ref_campus",
+				"ref_campus_company", "ref_city", "ref_company", "ref_district", "ref_postcode", "ref_zone", "staff",
+				"vendor_address", "vendor_bank", "vendor_contact", "vendor_contact_identification", "vendor_pegawai_tauliah",
+				"vendor_registration_flow", "vendor_registration_flow_notice", "committee_detail", "contract_item",
+				"item_specification_detail", "node_access_campus", "ref_ptj", "vendor_activation_login", "node_access_ptj",
+				"ref_department", "ref_procurement_numbering", "ref_unit", "node_access_department", "node_access_unit",
+				"pb_master", "pp_master", "pb_detail", "pb_detail_specification", "pp_detail", "pp_detail_item_distribution",
+				"pp_detail_user" };
+		final List<String> list = Arrays.asList(tables);
+		return list;
+	}
+
+	private List<String> generateExpectedTables() {
 		final String[] tables = { "calendar_event", "committee_detail", "committee_master", "contract", "contract_item",
 				"contract_vendor", "dummy", "ep_user", "fais_account_code", "inbox", "item", "item_account_need", "item_agencies",
 				"item_committee", "item_parameter", "item_requisition", "item_specification_detail", "item_specification_master",
