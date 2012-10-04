@@ -3,7 +3,9 @@ package com.twistlet.soberspider.model.service;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -27,10 +29,16 @@ public class DatabaseServiceImplIT extends AbstractJUnit4SpringContextTests {
 	}
 
 	@Test
-	public void testListTables() {
+	public void testListTablesItem() {
 		final List<String> actual = databaseService.listTables();
 		final List<String> expected = generateExpected();
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testListTablesCount() {
+		final Set<String> actual = new LinkedHashSet<>(databaseService.listTables());
+		assertEquals(101, actual.size());
 	}
 
 	private List<String> generateExpected() {
