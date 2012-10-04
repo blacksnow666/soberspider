@@ -66,4 +66,17 @@ public class TableServiceImplIT extends AbstractJUnit4SpringContextTests {
 		assertEquals(expected, actual);
 	}
 
+	@Test
+	public void testListPKForTable1() {
+		final List<String> actual = tableService.listPrimaryKeyColumnsForTable("item");
+		final List<String> expected = Arrays.asList(new String[] { "id" });
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testListPKForTable2() {
+		final List<String> actual = tableService.listPrimaryKeyColumnsForTable("vendor_equity");
+		final List<String> expected = Arrays.asList(new String[] { "vendor_code" });
+		assertEquals(expected, actual);
+	}
 }
