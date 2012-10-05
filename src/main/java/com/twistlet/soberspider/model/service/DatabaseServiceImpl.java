@@ -9,15 +9,21 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
 
+import com.twistlet.soberspider.model.type.DatabaseTable;
+
+@Service
 public class DatabaseServiceImpl implements DatabaseService {
 
 	private final DataSource dataSource;
 	private final TableService tableService;
 
+	@Autowired
 	public DatabaseServiceImpl(final DataSource dataSource, final TableService tableService) {
 		this.dataSource = dataSource;
 		this.tableService = tableService;
@@ -64,6 +70,15 @@ public class DatabaseServiceImpl implements DatabaseService {
 			listToBeProcessed.removeAll(listAdded);
 		}
 		return listOk;
+	}
+
+	@Override
+	public DatabaseTable createDatabaseTable(final String tablename) {
+		final DatabaseTable databaseTable = new DatabaseTable();
+		databaseTable.setName(tablename);
+		databaseTable.setPrimaryKeyColumns(tableService.listPrimaryKeyColumnsForTable(tablename));
+		databaseTable.setColumns(null);
+		return databaseTable;
 	}
 
 }
