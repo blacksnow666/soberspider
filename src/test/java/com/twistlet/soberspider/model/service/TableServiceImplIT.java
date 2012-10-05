@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -19,12 +18,8 @@ public class TableServiceImplIT extends AbstractJUnit4SpringContextTests {
 	@Autowired
 	DataSource dataSource;
 
+	@Autowired
 	TableService tableService;
-
-	@Before
-	public void init() {
-		tableService = new TableServiceImpl(dataSource);
-	}
 
 	@Test
 	public void testListTableDependenciesForTableNone1() {

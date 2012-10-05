@@ -9,7 +9,6 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,14 +20,11 @@ public class DatabaseServiceImplIT extends AbstractJUnit4SpringContextTests {
 	@Autowired
 	DataSource dataSource;
 
+	@Autowired
 	DatabaseService databaseService;
-	TableService tableService;
 
-	@Before
-	public void init() {
-		tableService = new TableServiceImpl(dataSource);
-		databaseService = new DatabaseServiceImpl(dataSource, tableService);
-	}
+	@Autowired
+	TableService tableService;
 
 	@Test
 	public void testListTablesItem() {
