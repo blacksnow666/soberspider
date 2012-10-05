@@ -77,7 +77,7 @@ public class DatabaseServiceImpl implements DatabaseService {
 		final DatabaseTable databaseTable = new DatabaseTable();
 		databaseTable.setName(tablename);
 		databaseTable.setPrimaryKeyColumns(tableService.listPrimaryKeyColumnsForTable(tablename));
-		databaseTable.setColumns(null);
+		databaseTable.setColumns(tableService.listColumnsForTable(tablename));
 		return databaseTable;
 	}
 
