@@ -135,6 +135,9 @@ public class TableServiceImpl implements TableService {
 			final String columnName = rs.getString("COLUMN_NAME");
 			final int dataType = rs.getInt("DATA_TYPE");
 			final ColumnType columnType = columnTypeMap.get(dataType);
+			if (columnType == null) {
+				throw new RuntimeException(columnName + ": column type not mapped: " + dataType);
+			}
 			final int columnSize = rs.getInt("COLUMN_SIZE");
 			final int decimalDigits = rs.getInt("DECIMAL_DIGITS");
 			final boolean nullable = rs.getInt("NULLABLE") == 1 ? true : false;
@@ -143,7 +146,6 @@ public class TableServiceImpl implements TableService {
 			final int ordinalPosition = rs.getInt("ORDINAL_POSITION");
 			return new DatabaseColumn(columnName, columnType, columnSize, decimalDigits, nullable, autoIncrement, ordinalPosition);
 		}
-
 	}
 
 	@Override
@@ -163,11 +165,10 @@ public class TableServiceImpl implements TableService {
 
 		@Override
 		public List<DatabaseColumn> doInConnection(final Connection connection) throws SQLException, DataAccessException {
-			final List<DatabaseColumn> columns = new ArrayList<>();
 			final DatabaseMetaData databaseMetaData = connection.getMetaData();
 			final ResultSet resultSet = databaseMetaData.getColumns(null, null, tablename, null);
 			final TableServiceRowMapperProcessor<DatabaseColumn> rmp = new TableServiceRowMapperProcessor<>();
-			rmp.processRowMapper(resultSet, new ListPrimaryKeyColumnsRowMapper());
+			final List<DatabaseColumn> columns = rmp.processRowMapper(resultSet, new ListPrimaryKeyColumnsRowMapper());
 			resultSet.close();
 			return columns;
 		}
