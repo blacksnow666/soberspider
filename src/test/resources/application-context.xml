@@ -22,7 +22,7 @@
 	<context:annotation-config />
 	<context:component-scan base-package="com.twistlet.soberspider.model.service" />
 
-	<bean id="tableService" class="com.twistlet.soberspider.model.service.TableServiceImpl">
+	<bean id="columnTypeMapService" class="com.twistlet.soberspider.model.service.ColumnTypeServiceMapImpl">
 		<constructor-arg>
 			<util:map>
 				<entry key-ref="java.sql.Types.INTEGER">
