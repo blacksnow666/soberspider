@@ -7,8 +7,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.sql.DataSource;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -18,13 +16,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 public class DatabaseServiceImplIT extends AbstractJUnit4SpringContextTests {
 
 	@Autowired
-	DataSource dataSource;
-
-	@Autowired
 	DatabaseService databaseService;
-
-	@Autowired
-	TableService tableService;
 
 	@Test
 	public void testListTablesItem() {
