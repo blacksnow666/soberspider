@@ -6,20 +6,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 import com.twistlet.soberspider.model.type.DatabaseColumn;
+import com.twistlet.soberspider.model.type.ForeignKey;
 
 @ContextConfiguration("classpath:application-context.xml")
 public class TableServiceImplIT extends AbstractJUnit4SpringContextTests {
-
-	@Autowired
-	DataSource dataSource;
 
 	@Autowired
 	TableService tableService;
@@ -98,5 +94,29 @@ public class TableServiceImplIT extends AbstractJUnit4SpringContextTests {
 			listColumns.addAll(tableService.listColumnsForTable(table));
 		}
 		assertEquals(773, listColumns.size());
+	}
+
+	@Test
+	public void testListForeignKeyNone1() {
+		final List<ForeignKey> list = tableService.listForeignKeysForTable("calendar_event");
+		assertEquals(0, list.size());
+	}
+
+	@Test
+	public void testListForeignKeySingleCount1() {
+		final List<ForeignKey> list = tableService.listForeignKeysForTable("ref_city");
+		assertEquals(1, list.size());
+	}
+
+	@Test
+	public void testListForeignKeySingleContent1() {
+		final List<ForeignKey> list = tableService.listForeignKeysForTable("ref_city");
+		final ForeignKey item = list.get(0);
+		final String columnName = item.getColumnName();
+		final String foreignTable = item.getForeignTable();
+		final String foreignColum = item.getForeignColumn();
+		final String actual = columnName + "/" + foreignTable + "/" + foreignColum;
+		final String expected = "state_code/ref_state/id";
+		assertEquals(expected, actual);
 	}
 }
