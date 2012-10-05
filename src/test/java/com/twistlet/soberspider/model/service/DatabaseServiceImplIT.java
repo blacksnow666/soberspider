@@ -72,7 +72,7 @@ public class DatabaseServiceImplIT extends AbstractJUnit4SpringContextTests {
 		return list;
 	}
 
-	private List<String> generateExpectedTables() {
+	public static List<String> generateExpectedTables() {
 		final String[] tables = { "calendar_event", "committee_detail", "committee_master", "contract", "contract_item",
 				"contract_vendor", "dummy", "ep_user", "fais_account_code", "inbox", "item", "item_account_need", "item_agencies",
 				"item_committee", "item_parameter", "item_requisition", "item_specification_detail", "item_specification_master",
