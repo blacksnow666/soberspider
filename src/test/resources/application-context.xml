@@ -25,11 +25,41 @@
 	<bean id="tableService" class="com.twistlet.soberspider.model.service.TableServiceImpl">
 		<constructor-arg>
 			<util:map>
-				<entry key="1">
+				<entry key-ref="java.sql.Types.INTEGER">
 					<util:constant static-field="com.twistlet.soberspider.model.type.ColumnType.COLUMN_TYPE_INTEGER" />
+				</entry>
+				<entry key-ref="java.sql.Types.VARCHAR">
+					<util:constant static-field="com.twistlet.soberspider.model.type.ColumnType.COLUMN_TYPE_VARCHAR" />
+				</entry>
+				<entry key-ref="java.sql.Types.TIMESTAMP">
+					<util:constant static-field="com.twistlet.soberspider.model.type.ColumnType.COLUMN_TYPE_TIMESTAMP" />
+				</entry>
+				<entry key-ref="java.sql.Types.BIT">
+					<util:constant static-field="com.twistlet.soberspider.model.type.ColumnType.COLUMN_TYPE_BOOLEAN" />
+				</entry>
+				<entry key-ref="java.sql.Types.CHAR">
+					<util:constant static-field="com.twistlet.soberspider.model.type.ColumnType.COLUMN_TYPE_CHAR" />
+				</entry>
+				<entry key-ref="java.sql.Types.DATE">
+					<util:constant static-field="com.twistlet.soberspider.model.type.ColumnType.COLUMN_TYPE_DATE" />
+				</entry>
+				<entry key-ref="java.sql.Types.DECIMAL">
+					<util:constant static-field="com.twistlet.soberspider.model.type.ColumnType.COLUMN_TYPE_DECIMAL" />
+				</entry>
+				<entry key-ref="java.sql.Types.LONGVARBINARY">
+					<util:constant static-field="com.twistlet.soberspider.model.type.ColumnType.COLUMN_TYPE_LONGVARBINARY" />
 				</entry>
 			</util:map>
 		</constructor-arg>
 	</bean>
+
+	<util:constant id="java.sql.Types.INTEGER" static-field="java.sql.Types.INTEGER" />
+	<util:constant id="java.sql.Types.VARCHAR" static-field="java.sql.Types.VARCHAR" />
+	<util:constant id="java.sql.Types.TIMESTAMP" static-field="java.sql.Types.TIMESTAMP" />
+	<util:constant id="java.sql.Types.BIT" static-field="java.sql.Types.BIT" />
+	<util:constant id="java.sql.Types.CHAR" static-field="java.sql.Types.CHAR" />
+	<util:constant id="java.sql.Types.DATE" static-field="java.sql.Types.DATE" />
+	<util:constant id="java.sql.Types.DECIMAL" static-field="java.sql.Types.DECIMAL" />
+	<util:constant id="java.sql.Types.LONGVARBINARY" static-field="java.sql.Types.LONGVARBINARY" />
 
 </beans>

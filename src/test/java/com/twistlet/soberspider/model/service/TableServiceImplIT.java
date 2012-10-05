@@ -2,6 +2,7 @@ package com.twistlet.soberspider.model.service;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+
+import com.twistlet.soberspider.model.type.DatabaseColumn;
 
 @ContextConfiguration("classpath:application-context.xml")
 public class TableServiceImplIT extends AbstractJUnit4SpringContextTests {
@@ -73,5 +76,27 @@ public class TableServiceImplIT extends AbstractJUnit4SpringContextTests {
 		final List<String> actual = tableService.listPrimaryKeyColumnsForTable("vendor_equity");
 		final List<String> expected = Arrays.asList(new String[] { "vendor_code" });
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testListColumnsCountForTable1() {
+		final List<DatabaseColumn> list = tableService.listColumnsForTable("calendar_event");
+		assertEquals(6, list.size());
+	}
+
+	@Test
+	public void testListColumnsCountForTable2() {
+		final List<DatabaseColumn> list = tableService.listColumnsForTable("user");
+		assertEquals(5, list.size());
+	}
+
+	@Test
+	public void testListColumnsCountForTablesAll() {
+		final List<String> list = DatabaseServiceImplIT.generateExpectedTables();
+		final List<DatabaseColumn> listColumns = new ArrayList<>();
+		for (final String table : list) {
+			listColumns.addAll(tableService.listColumnsForTable(table));
+		}
+		assertEquals(773, listColumns.size());
 	}
 }
