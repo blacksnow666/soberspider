@@ -13,16 +13,24 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+
+import com.twistlet.soberspider.model.type.ColumnType;
+import com.twistlet.soberspider.model.type.DatabaseColumn;
 
 public class TableServiceImpl implements TableService {
 
 	private final DataSource dataSource;
+	private final Map<Integer, ColumnType> columnTypeMap;
 
-	public TableServiceImpl(final DataSource dataSource) {
+	@Autowired
+	public TableServiceImpl(final DataSource dataSource, final Map<Integer, ColumnType> columnTypeMap) {
 		this.dataSource = dataSource;
+		this.columnTypeMap = columnTypeMap;
 	}
 
 	@Override
@@ -76,18 +84,28 @@ public class TableServiceImpl implements TableService {
 			final Map<String, String> map = new LinkedHashMap<>();
 			final DatabaseMetaData databaseMetaData = connection.getMetaData();
 			final ResultSet resultSet = databaseMetaData.getPrimaryKeys(null, null, tablename);
-			int count = 0;
-			while (resultSet.next()) {
-				final String column = resultSet.getString("COLUMN_NAME");
-				final Short index = resultSet.getShort("KEY_SEQ");
-				map.put(index.toString(), column);
-				count++;
-			}
+			final TableServiceRowMapperProcessor<String> rmp = new TableServiceRowMapperProcessor<>();
+			final RowMapper<String> mapper = new RowMapper<String>() {
+
+				@Override
+				public String mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+					final String column = resultSet.getString("COLUMN_NAME");
+					final Short index = resultSet.getShort("KEY_SEQ");
+					map.put(index.toString(), column);
+					return column;
+				}
+			};
+			final int count = rmp.processRowMapper(resultSet, mapper).size();
 			resultSet.close();
 			final Set<String> set = map.keySet();
 			if (count != set.size()) {
 				throw new RuntimeException("PK size inconsistency in table " + tablename);
 			}
+			populateAndCheckColumns(columns, map, set);
+			return columns;
+		}
+
+		private void populateAndCheckColumns(final List<String> columns, final Map<String, String> map, final Set<String> set) {
 			short index = 0;
 			for (final String key : set) {
 				index++;
@@ -96,8 +114,62 @@ public class TableServiceImpl implements TableService {
 				}
 				columns.add(map.get(key));
 			}
-			return columns;
 		}
 	}
 
+	class TableServiceRowMapperProcessor<T> {
+		public List<T> processRowMapper(final ResultSet rs, final RowMapper<T> rm) throws SQLException {
+			int count = 0;
+			final List<T> list = new ArrayList<>();
+			while (rs.next()) {
+				list.add(rm.mapRow(rs, count++));
+			}
+			return list;
+		}
+	}
+
+	class ListPrimaryKeyColumnsRowMapper implements RowMapper<DatabaseColumn> {
+
+		@Override
+		public DatabaseColumn mapRow(final ResultSet rs, final int rowNum) throws SQLException {
+			final String columnName = rs.getString("COLUMN_NAME");
+			final int dataType = rs.getInt("DATA_TYPE");
+			final ColumnType columnType = columnTypeMap.get(dataType);
+			final int columnSize = rs.getInt("COLUMN_SIZE");
+			final int decimalDigits = rs.getInt("DECIMAL_DIGITS");
+			final boolean nullable = rs.getInt("NULLABLE") == 1 ? true : false;
+			final String autoIncrementStatus = rs.getString("IS_AUTOINCREMENT");
+			final boolean autoIncrement = "YES".equals(autoIncrementStatus) ? true : false;
+			final int ordinalPosition = rs.getInt("ORDINAL_POSITION");
+			return new DatabaseColumn(columnName, columnType, columnSize, decimalDigits, nullable, autoIncrement, ordinalPosition);
+		}
+
+	}
+
+	@Override
+	public List<DatabaseColumn> listColumnsForTable(final String tablename) {
+		final ListColumnsConnectionCallback callback = new ListColumnsConnectionCallback(tablename);
+		final List<DatabaseColumn> result = new JdbcTemplate(dataSource).execute(callback);
+		return result;
+	}
+
+	class ListColumnsConnectionCallback implements ConnectionCallback<List<DatabaseColumn>> {
+
+		private final String tablename;
+
+		public ListColumnsConnectionCallback(final String tablename) {
+			this.tablename = tablename;
+		}
+
+		@Override
+		public List<DatabaseColumn> doInConnection(final Connection connection) throws SQLException, DataAccessException {
+			final List<DatabaseColumn> columns = new ArrayList<>();
+			final DatabaseMetaData databaseMetaData = connection.getMetaData();
+			final ResultSet resultSet = databaseMetaData.getColumns(null, null, tablename, null);
+			final TableServiceRowMapperProcessor<DatabaseColumn> rmp = new TableServiceRowMapperProcessor<>();
+			rmp.processRowMapper(resultSet, new ListPrimaryKeyColumnsRowMapper());
+			resultSet.close();
+			return columns;
+		}
+	}
 }
