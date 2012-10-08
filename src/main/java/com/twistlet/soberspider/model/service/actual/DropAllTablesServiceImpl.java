@@ -33,34 +33,33 @@ public class DropAllTablesServiceImpl implements DropAllTablesService {
 	public void dropAllTables(final DataSource dataSource) {
 		final DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(dataSource);
 		final TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
-		transactionTemplate.execute(new DropAllTablesTransactionCallback(dataSource));
+		final List<String> tables = new ArrayList<>();
+		tables.addAll(databaseService.listTables(dataSource));
+		final int sizeBefore = tables.size();
+		logger.info("{} tables found", sizeBefore);
+		while (tables.size() > 0) {
+			transactionTemplate.execute(new DropAllTablesTransactionCallback(dataSource, tables));
+			tables.clear();
+			tables.addAll(databaseService.listTables(dataSource));
+			final int sizeAfter = tables.size();
+			if (sizeAfter >= sizeBefore) {
+				throw new RuntimeException("dropping tables do not seem to decrease table count");
+			}
+		}
 	}
 
 	class DropAllTablesTransactionCallback implements TransactionCallback<String> {
 		private final DataSource dataSource;
+		private final List<String> tables;
 
-		public DropAllTablesTransactionCallback(final DataSource dataSource) {
+		public DropAllTablesTransactionCallback(final DataSource dataSource, final List<String> tables) {
 			this.dataSource = dataSource;
+			this.tables = tables;
+
 		}
 
 		@Override
 		public String doInTransaction(final TransactionStatus status) {
-			final List<String> tables = new ArrayList<>();
-			tables.addAll(databaseService.listTables(dataSource));
-			final int sizeBefore = tables.size();
-			while (tables.size() > 0) {
-				dropTables(tables);
-				tables.clear();
-				tables.addAll(databaseService.listTables(dataSource));
-				final int sizeAfter = tables.size();
-				if (sizeBefore >= sizeAfter) {
-					throw new RuntimeException("dropping tables do not seem to decrease table count");
-				}
-			}
-			return null;
-		}
-
-		private void dropTables(final List<String> tables) {
 			final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 			final List<String> sortedTables = databaseService.sortTables(dataSource, tables);
 			Collections.reverse(sortedTables);
@@ -75,7 +74,9 @@ public class DropAllTablesServiceImpl implements DropAllTablesService {
 				}
 			}
 			logger.info("{}/{} tables dropped", i, total);
+			return null;
 		}
+
 	}
 
 }

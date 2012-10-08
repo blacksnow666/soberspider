@@ -3,7 +3,6 @@ package com.twistlet.soberspider.run;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -20,7 +19,9 @@ public class GenerateInformixSchema {
 		for (final String table : tables) {
 			databaseTables.add(databaseService.createDatabaseTable(table));
 		}
-		final List<String> list = databaseService.createTableCreationStatements(databaseTables);
-		System.out.println(StringUtils.join(list.toArray(new String[] {}), "\n"));
+		// /final List<String> list =
+		// databaseService.createTableCreationStatements(databaseTables);
+		// System.out.println(StringUtils.join(list.toArray(new String[] {}),
+		// "\n"));
 	}
 }
