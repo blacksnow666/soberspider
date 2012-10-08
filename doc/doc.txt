@@ -1,0 +1,25 @@
+1. 
+Database Service
+- listTables (DataSource)
+- listOrderedTables(DataSource, List<String>)
+- dropTables(DataSource, List<String>)
+
+2.
+DatabaseSchemaService
+- generateSchema(DataSource)
+
+
+apa yang aku nak
+1. drop all tables from a datasource (informix)
+- list the table
+- list it ordered
+- reverse the order
+- drop the tables
+repeat until size is zero
+
+2. read the schema from a datasource (mysql)
+2.1 verify the schema is not messed up
+3. create a script from the schema
+4. run the create script
+
+- 
