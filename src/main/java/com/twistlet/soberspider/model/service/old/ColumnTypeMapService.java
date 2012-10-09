@@ -1,4 +1,4 @@
-package com.twistlet.soberspider.model.service;
+package com.twistlet.soberspider.model.service.old;
 
 import com.twistlet.soberspider.model.type.ColumnType;
 

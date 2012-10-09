@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
+import com.twistlet.soberspider.model.service.old.DatabaseService;
+
 @ContextConfiguration("classpath:application-context.xml")
 public class DatabaseServiceImplIT extends AbstractJUnit4SpringContextTests {
 

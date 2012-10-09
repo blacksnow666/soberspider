@@ -1,4 +1,4 @@
-package com.twistlet.soberspider.model.service.actual;
+package com.twistlet.soberspider.model.service;
 
 import java.util.List;
 

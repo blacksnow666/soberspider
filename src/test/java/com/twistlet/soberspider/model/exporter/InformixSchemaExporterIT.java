@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-import com.twistlet.soberspider.model.service.DatabaseService;
+import com.twistlet.soberspider.model.service.old.DatabaseService;
 import com.twistlet.soberspider.model.type.DatabaseTable;
 
 @ContextConfiguration("classpath:application-context.xml")

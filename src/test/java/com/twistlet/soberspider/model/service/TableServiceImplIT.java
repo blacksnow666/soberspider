@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
+import com.twistlet.soberspider.model.service.old.TableService;
 import com.twistlet.soberspider.model.type.DatabaseColumn;
 import com.twistlet.soberspider.model.type.ForeignKey;
 

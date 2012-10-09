@@ -6,7 +6,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.twistlet.soberspider.model.service.actual.SoberSpiderService;
+import com.twistlet.soberspider.model.service.SoberSpiderService;
 
 public class DropAllTablesOnEpdbSe {
 	public static void main(final String[] args) {
