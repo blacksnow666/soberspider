@@ -6,9 +6,7 @@ import javax.sql.DataSource;
 
 import com.twistlet.soberspider.model.type.DatabaseTable;
 
-public interface SoberSpiderService {
+public interface ListDatabaseTablesService {
 
-	void dropAllTables(DataSource dataSource);
-
-	List<DatabaseTable> listDatabaseTables(DataSource dataSource);
+	List<DatabaseTable> list(DataSource dataSource);
 }
