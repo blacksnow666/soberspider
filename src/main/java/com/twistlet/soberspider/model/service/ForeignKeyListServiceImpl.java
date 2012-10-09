@@ -1,10 +1,12 @@
-package com.twistlet.soberspider.model.service.old;
+package com.twistlet.soberspider.model.service;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -18,15 +20,13 @@ import com.twistlet.soberspider.model.type.ForeignKey;
 @Service
 public class ForeignKeyListServiceImpl implements ForeignKeyListService {
 
-	private final JdbcTemplate jdbcTemplate;
-
 	@Autowired
-	public ForeignKeyListServiceImpl(final JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
+	public ForeignKeyListServiceImpl() {
 	}
 
 	@Override
-	public List<ForeignKey> listForeignKeys(final String tablename) {
+	public List<ForeignKey> listForeignKeys(final DataSource dataSource, final String tablename) {
+		final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		final ListForeignKeysConnectionCallback callback = new ListForeignKeysConnectionCallback(tablename);
 		final List<ForeignKey> result = jdbcTemplate.execute(callback);
 		return result;
