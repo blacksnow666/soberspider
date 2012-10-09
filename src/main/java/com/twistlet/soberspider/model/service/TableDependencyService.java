@@ -1,7 +1,10 @@
-package com.twistlet.soberspider.model.service;
+package com.twistlet.soberspider.model.service.actual;
 
 import java.util.List;
 
+import javax.sql.DataSource;
+
 public interface TableDependencyService {
-	List<String> listTableDependencies(String tablename);
+	List<String> listTableDependencies(DataSource dataSource, String tablename);
+
 }

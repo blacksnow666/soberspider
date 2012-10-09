@@ -1,4 +1,4 @@
-package com.twistlet.soberspider.model.service;
+package com.twistlet.soberspider.model.service.actual;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -9,7 +9,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.sql.DataSource;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -18,15 +19,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class TableDependencyServiceImpl implements TableDependencyService {
 
-	private final JdbcTemplate jdbcTemplate;
-
-	@Autowired
-	public TableDependencyServiceImpl(final JdbcTemplate jdbcTemplate) {
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
 	@Override
-	public List<String> listTableDependencies(final String tablename) {
+	public List<String> listTableDependencies(final DataSource dataSource, final String tablename) {
+		final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		final ListTableDependenciesConnectionCallback callback = new ListTableDependenciesConnectionCallback(tablename);
 		final List<String> result = jdbcTemplate.execute(callback);
 		return result;

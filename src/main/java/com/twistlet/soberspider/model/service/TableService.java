@@ -1,17 +1,9 @@
-package com.twistlet.soberspider.model.service;
+package com.twistlet.soberspider.model.service.actual;
 
 import java.util.List;
 
-import com.twistlet.soberspider.model.type.DatabaseColumn;
-import com.twistlet.soberspider.model.type.ForeignKey;
+import javax.sql.DataSource;
 
 public interface TableService {
-
-	List<String> listTableDependenciesForTable(String tablename);
-
-	List<String> listPrimaryKeyColumnsForTable(String tablename);
-
-	List<DatabaseColumn> listColumnsForTable(String tablename);
-
-	List<ForeignKey> listForeignKeysForTable(String tablename);
+	List<String> listTableDependencies(DataSource dataSource, List<String> tables);
 }

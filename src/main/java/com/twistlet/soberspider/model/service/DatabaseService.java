@@ -1,15 +1,11 @@
-package com.twistlet.soberspider.model.service;
+package com.twistlet.soberspider.model.service.actual;
 
 import java.util.List;
 
-import com.twistlet.soberspider.model.type.DatabaseTable;
+import javax.sql.DataSource;
 
 public interface DatabaseService {
+	List<String> listTables(DataSource dataSource);
 
-	List<String> listTables();
-
-	List<String> sortTablesByCreationOrder(List<String> list);
-
-	DatabaseTable createDatabaseTable(String tablename);
-
+	List<String> sortTables(DataSource dataSource, List<String> tables);
 }
