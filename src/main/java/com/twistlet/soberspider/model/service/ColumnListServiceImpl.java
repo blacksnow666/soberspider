@@ -1,10 +1,12 @@
-package com.twistlet.soberspider.model.service.old;
+package com.twistlet.soberspider.model.service;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -13,23 +15,23 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
+import com.twistlet.soberspider.model.service.old.TableServiceRowMapperProcessor;
 import com.twistlet.soberspider.model.type.ColumnType;
 import com.twistlet.soberspider.model.type.DatabaseColumn;
 
 @Service
 public class ColumnListServiceImpl implements ColumnListService {
 
-	private final JdbcTemplate jdbcTemplate;
 	private final ColumnTypeMapService columnTypeMapService;
 
 	@Autowired
-	public ColumnListServiceImpl(final JdbcTemplate jdbcTemplate, final ColumnTypeMapService columnTypeMapService) {
-		this.jdbcTemplate = jdbcTemplate;
+	public ColumnListServiceImpl(final ColumnTypeMapService columnTypeMapService) {
 		this.columnTypeMapService = columnTypeMapService;
 	}
 
 	@Override
-	public List<DatabaseColumn> listColumns(final String tablename) {
+	public List<DatabaseColumn> listColumns(final DataSource dataSource, final String tablename) {
+		final JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 		final ListColumnsConnectionCallback callback = new ListColumnsConnectionCallback(tablename);
 		final List<DatabaseColumn> result = jdbcTemplate.execute(callback);
 		return result;
