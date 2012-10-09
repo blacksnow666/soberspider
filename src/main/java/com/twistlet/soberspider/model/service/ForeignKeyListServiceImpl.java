@@ -8,7 +8,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -19,10 +18,6 @@ import com.twistlet.soberspider.model.type.ForeignKey;
 
 @Service
 public class ForeignKeyListServiceImpl implements ForeignKeyListService {
-
-	@Autowired
-	public ForeignKeyListServiceImpl() {
-	}
 
 	@Override
 	public List<ForeignKey> listForeignKeys(final DataSource dataSource, final String tablename) {

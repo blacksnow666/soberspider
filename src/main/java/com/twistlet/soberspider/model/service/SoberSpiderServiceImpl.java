@@ -13,10 +13,13 @@ import com.twistlet.soberspider.model.type.DatabaseTable;
 public class SoberSpiderServiceImpl implements SoberSpiderService {
 
 	private final DropAllTablesService dropAllTablesService;
+	private final ListDatabaseTablesService listDatabaseTablesService;
 
 	@Autowired
-	public SoberSpiderServiceImpl(final DropAllTablesService dropAllTablesService) {
+	public SoberSpiderServiceImpl(final DropAllTablesService dropAllTablesService,
+			final ListDatabaseTablesService listDatabaseTablesService) {
 		this.dropAllTablesService = dropAllTablesService;
+		this.listDatabaseTablesService = listDatabaseTablesService;
 	}
 
 	@Override
@@ -26,8 +29,8 @@ public class SoberSpiderServiceImpl implements SoberSpiderService {
 
 	@Override
 	public List<DatabaseTable> listDatabaseTables(final DataSource dataSource) {
-		// TODO Auto-generated method stub
-		return null;
+		return listDatabaseTablesService.list(dataSource);
+
 	}
 
 }
