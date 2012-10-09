@@ -1,4 +1,4 @@
-package com.twistlet.soberspider.model.service.old;
+package com.twistlet.soberspider.model.service;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

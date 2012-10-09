@@ -18,7 +18,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
-import com.twistlet.soberspider.model.service.old.TableServiceRowMapperProcessor;
 
 @Service
 public class PrimaryKeyColumnListServiceImpl implements PrimaryKeyColumnListService {

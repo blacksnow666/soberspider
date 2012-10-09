@@ -15,7 +15,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
-import com.twistlet.soberspider.model.service.old.TableServiceRowMapperProcessor;
 import com.twistlet.soberspider.model.type.ColumnType;
 import com.twistlet.soberspider.model.type.DatabaseColumn;
 
