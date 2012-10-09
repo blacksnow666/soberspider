@@ -73,4 +73,93 @@ public class ColumnListServiceTest extends AbstractJUnit4SpringContextTests {
 		final String expected = "[0-9]*/50/1000/[0-9]*/[0-9]*/2";
 		assertTrue(actual.matches(expected));
 	}
+
+	@Test
+	public void testDecimalDigitsAllZero() {
+		final List<DatabaseColumn> list = columnListService.listColumns(dataSource, "calendar_event");
+		final List<Integer> values = new ArrayList<>();
+		for (final DatabaseColumn databaseColumn : list) {
+			values.add(databaseColumn.getDecimalDigits());
+		}
+		final String actual = StringUtils.join(values, "/");
+		final String expected = "0/0/0/0/0/0";
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testDecimalDigitsWithNonZero() {
+		final List<DatabaseColumn> list = columnListService.listColumns(dataSource, "contract");
+		final List<Integer> values = new ArrayList<>();
+		for (final DatabaseColumn databaseColumn : list) {
+			values.add(databaseColumn.getDecimalDigits());
+		}
+		final String actual = StringUtils.join(values, "/");
+		final String expected = "0/0/0/2/0/2/0/0/0/0/0/0/0/0";
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testNullableContract() {
+		final List<DatabaseColumn> list = columnListService.listColumns(dataSource, "contract");
+		final List<Boolean> values = new ArrayList<>();
+		for (final DatabaseColumn databaseColumn : list) {
+			values.add(databaseColumn.isNullable());
+		}
+		final String actual = StringUtils.join(values, "/");
+		final String expected = "false/true/true/true/true/true/true/true/true/true/true/true/true/true";
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testAutoIncrementNone() {
+		final List<DatabaseColumn> list = columnListService.listColumns(dataSource, "role");
+		final List<Boolean> values = new ArrayList<>();
+		for (final DatabaseColumn databaseColumn : list) {
+			values.add(databaseColumn.isAutoIncrement());
+		}
+		final String actual = StringUtils.join(values, "/");
+		final String expected = "false/false";
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testAutoIncrementOne() {
+		final List<DatabaseColumn> list = columnListService.listColumns(dataSource, "contract");
+		final List<Boolean> values = new ArrayList<>();
+		for (final DatabaseColumn databaseColumn : list) {
+			values.add(databaseColumn.isAutoIncrement());
+		}
+		final String actual = StringUtils.join(values, "/");
+		final String expected = "true/false/false/false/false/false/false/false/false/false/false/false/false/false";
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testOrdinalPositionRole() {
+		final List<DatabaseColumn> list = columnListService.listColumns(dataSource, "role");
+		final List<Integer> values = new ArrayList<>();
+		for (final DatabaseColumn databaseColumn : list) {
+			values.add(databaseColumn.getOrdinalPosition());
+		}
+		final String actual = StringUtils.join(values, "/");
+		final String expected = "1/2";
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testOrdinalPositionContract() {
+		final List<DatabaseColumn> list = columnListService.listColumns(dataSource, "contract");
+		final List<Integer> values = new ArrayList<>();
+		for (final DatabaseColumn databaseColumn : list) {
+			values.add(databaseColumn.getOrdinalPosition());
+		}
+		final String actual = StringUtils.join(values, "/");
+		final String expected = "1/2/3/4/5/6/7/8/9/10/11/12/13/14";
+		assertEquals(expected, actual);
+	}
+	/*
+	 * 
+	 * false; final int ordinalPosition = rs.getInt("ORDINAL_POSITION");
+	 */
+
 }
