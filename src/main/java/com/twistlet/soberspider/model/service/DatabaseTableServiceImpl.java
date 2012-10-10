@@ -25,6 +25,7 @@ public class DatabaseTableServiceImpl implements DatabaseTableService {
 		final DatabaseTable databaseTable = new DatabaseTable();
 		databaseTable.setColumns(columnListService.listColumns(dataSource, tablename));
 		databaseTable.setPrimaryKeyColumns(primaryKeyColumnListService.listPrimaryKeyColumns(dataSource, tablename));
+		// TODO: foreign keys, unique index, non-unique index
 		return databaseTable;
 	}
 }
