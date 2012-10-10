@@ -31,7 +31,27 @@ public class ForeignKeyListServiceTest extends AbstractJUnit4SpringContextTests 
 	@Test
 	public void testContractVendorCount() {
 		final List<ForeignKey> list = foreignKeyListService.listForeignKeys(dataSource, "contract_vendor");
-		assertEquals(0, list.size());
+		assertEquals(2, list.size());
+	}
+
+	@Test
+	public void testContractVendorContent1() {
+		final List<ForeignKey> list = foreignKeyListService.listForeignKeys(dataSource, "contract_vendor");
+		final ForeignKey item = list.get(0);
+		final String actual = item.getColumnName() + "/" + item.getForeignTable() + "/" + item.getForeignColumn() + "/"
+				+ item.getUpdateRule() + "/" + item.getDeleteRule();
+		final String expected = "contract_id/contract/id/3/3";
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testContractVendorContent2() {
+		final List<ForeignKey> list = foreignKeyListService.listForeignKeys(dataSource, "contract_vendor");
+		final ForeignKey item = list.get(1);
+		final String actual = item.getColumnName() + "/" + item.getForeignTable() + "/" + item.getForeignColumn() + "/"
+				+ item.getUpdateRule() + "/" + item.getDeleteRule();
+		final String expected = "vendor_id/vendor/id/3/3";
+		assertEquals(expected, actual);
 	}
 
 }
