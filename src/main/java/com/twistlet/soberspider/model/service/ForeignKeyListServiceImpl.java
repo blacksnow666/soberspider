@@ -53,12 +53,15 @@ public class ForeignKeyListServiceImpl implements ForeignKeyListService {
 			final String pkColumnName = rs.getString("PKCOLUMN_NAME");
 			final String fkTablename = rs.getString("FKTABLE_NAME");
 			final String fkColumnName = rs.getString("FKCOLUMN_NAME");
-			final int keySeq = rs.getShort("KEY_SEQ");
-			if (keySeq != 1) {
+			final short updateRule = rs.getShort("UPDATE_RULE");
+			final short deleteRule = rs.getShort("DELETE_RULE");
+
+			final short keySeq = rs.getShort("KEY_SEQ");
+			if (keySeq != (short) 1) {
 				throw new UnsupportedOperationException("table " + tablename + ":" + pkColumnName
 						+ " uses a composite foreign key with table " + fkTablename + ":" + fkColumnName);
 			}
-			final ForeignKey fk = new ForeignKey(fkColumnName, pkColumnName, tablename);
+			final ForeignKey fk = new ForeignKey(fkColumnName, pkColumnName, tablename, updateRule, deleteRule);
 			return fk;
 		}
 	}
