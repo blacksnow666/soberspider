@@ -6,9 +6,8 @@ public class DatabaseTable {
 	private String name;
 	private List<DatabaseColumn> columns;
 	private List<String> primaryKeyColumns;
-	private List<List<ForeignKey>> foreignKeys;
-	private List<List<String>> nonUniqueIndexes;
-	private List<List<String>> uniqueIndexes;
+	private List<ForeignKey> foreignKeys;
+	private List<DatabaseTableIndex> tableIndexes;
 
 	public String getName() {
 		return name;
@@ -34,28 +33,20 @@ public class DatabaseTable {
 		this.primaryKeyColumns = primaryKeyColumns;
 	}
 
-	public List<List<ForeignKey>> getForeignKeys() {
+	public List<ForeignKey> getForeignKeys() {
 		return foreignKeys;
 	}
 
-	public void setForeignKeys(final List<List<ForeignKey>> foreignKeys) {
+	public void setForeignKeys(final List<ForeignKey> foreignKeys) {
 		this.foreignKeys = foreignKeys;
 	}
 
-	public List<List<String>> getNonUniqueIndexes() {
-		return nonUniqueIndexes;
+	public List<DatabaseTableIndex> getTableIndexes() {
+		return tableIndexes;
 	}
 
-	public void setNonUniqueIndexes(final List<List<String>> nonUniqueIndexes) {
-		this.nonUniqueIndexes = nonUniqueIndexes;
-	}
-
-	public List<List<String>> getUniqueIndexes() {
-		return uniqueIndexes;
-	}
-
-	public void setUniqueIndexes(final List<List<String>> uniqueIndexes) {
-		this.uniqueIndexes = uniqueIndexes;
+	public void setTableIndexes(final List<DatabaseTableIndex> tableIndexes) {
+		this.tableIndexes = tableIndexes;
 	}
 
 }
