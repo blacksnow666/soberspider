@@ -6,8 +6,10 @@ public class DatabaseTableIndex {
 
 	private final List<String> columns;
 	private final boolean unique;
+	private final String name;
 
-	public DatabaseTableIndex(final List<String> columns, final boolean unique) {
+	public DatabaseTableIndex(final String name, final List<String> columns, final boolean unique) {
+		this.name = name;
 		this.columns = columns;
 		this.unique = unique;
 	}
@@ -18,6 +20,10 @@ public class DatabaseTableIndex {
 
 	public boolean isUnique() {
 		return unique;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 }
