@@ -72,42 +72,25 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>com.informix</groupId>
-			<artifactId>ifx-jdbc</artifactId>
-			<version>1.0</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.informix</groupId>
-			<artifactId>ifx-jdbcx</artifactId>
-			<version>1.0</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.informix</groupId>
-			<artifactId>ifx-lang</artifactId>
-			<version>1.0</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.informix</groupId>
-			<artifactId>ifx-lsupp</artifactId>
-			<version>1.0</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.informix</groupId>
-			<artifactId>ifx-sqlj</artifactId>
-			<version>1.0</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.informix</groupId>
-			<artifactId>ifx-tools</artifactId>
-			<version>1.0</version>
-			<scope>runtime</scope>
-		</dependency>
 
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
 	</dependencies>
+	<build>
+		<finalName>soberspider</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
