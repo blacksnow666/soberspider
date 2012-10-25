@@ -16,6 +16,11 @@
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
 	</bean>
 
+	<jdbc:initialize-database data-source="dataSource" enabled="true">
+		<jdbc:script location="classpath:mysql-structure.sql" />
+	</jdbc:initialize-database>
+
+
 	<bean id="columnTypeMapService" class="com.twistlet.soberspider.model.service.ColumnTypeServiceMapImpl">
 		<constructor-arg>
 			<util:map>
