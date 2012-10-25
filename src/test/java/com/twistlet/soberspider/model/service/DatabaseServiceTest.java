@@ -1,6 +1,6 @@
 package com.twistlet.soberspider.model.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-@ContextConfiguration("classpath:application-context-service.xml")
+@ContextConfiguration("classpath:application-context-service-test.xml")
 public class DatabaseServiceTest extends AbstractJUnit4SpringContextTests {
 
 	@Autowired

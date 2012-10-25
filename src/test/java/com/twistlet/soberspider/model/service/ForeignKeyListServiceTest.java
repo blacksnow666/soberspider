@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 import com.twistlet.soberspider.model.type.ForeignKey;
 
-@ContextConfiguration("classpath:application-context-service.xml")
+@ContextConfiguration("classpath:application-context-service-test.xml")
 public class ForeignKeyListServiceTest extends AbstractJUnit4SpringContextTests {
 
 	@Autowired

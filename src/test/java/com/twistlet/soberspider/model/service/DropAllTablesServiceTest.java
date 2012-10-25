@@ -18,7 +18,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-@ContextConfiguration("classpath:application-context-service.xml")
+@ContextConfiguration("classpath:application-context-service-test.xml")
 public class DropAllTablesServiceTest extends AbstractJUnit4SpringContextTests {
 
 	@Autowired
@@ -44,6 +44,7 @@ public class DropAllTablesServiceTest extends AbstractJUnit4SpringContextTests {
 				} else {
 					result = true;
 				}
+				rs.getStatement();
 				rs.close();
 				return result;
 			}

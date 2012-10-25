@@ -1,7 +1,6 @@
 package com.twistlet.soberspider.model.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +16,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import com.twistlet.soberspider.model.type.ColumnType;
 import com.twistlet.soberspider.model.type.DatabaseColumn;
 
-@ContextConfiguration("classpath:application-context-service.xml")
+@ContextConfiguration("classpath:application-context-service-test.xml")
 public class ColumnListServiceTest extends AbstractJUnit4SpringContextTests {
 
 	@Autowired
