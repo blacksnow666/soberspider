@@ -48,7 +48,7 @@ public class RunDropCreateExport {
 
 	private void createStructureOnly(final DataSource dataSource) {
 		final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-		populator.addScript(new FileSystemResource("src/main/resources/mysql-structure.sql"));
+		populator.addScript(new FileSystemResource("eperolehan-mysql-structure.sql"));
 		DatabasePopulatorUtils.execute(populator, dataSource);
 	}
 
