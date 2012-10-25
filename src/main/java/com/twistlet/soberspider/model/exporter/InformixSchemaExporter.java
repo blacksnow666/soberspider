@@ -1,5 +1,6 @@
 package com.twistlet.soberspider.model.exporter;
 
+import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 import com.twistlet.soberspider.model.type.DatabaseColumn;
 import com.twistlet.soberspider.model.type.DatabaseTable;
+import com.twistlet.soberspider.model.type.DatabaseTableIndex;
+import com.twistlet.soberspider.model.type.ForeignKey;
 
 @Component
 public class InformixSchemaExporter implements SchemaExporter {
@@ -17,9 +20,6 @@ public class InformixSchemaExporter implements SchemaExporter {
 	@Override
 	public String exportTable(final DatabaseTable databaseTable) {
 		final String createStatement = basicCreate(databaseTable);
-		// TODO foreign keys
-		// TODO unique index
-		// TODO non-unique index
 		return createStatement;
 	}
 
@@ -28,6 +28,64 @@ public class InformixSchemaExporter implements SchemaExporter {
 		final List<String> lines = new ArrayList<>();
 		final StringBuilder sb = new StringBuilder("CREATE TABLE " + databaseTable.getName() + "\n");
 		sb.append("(\n");
+		createColumns(columns, lines);
+		createPrimaryKey(databaseTable, lines);
+		createForeignKeys(databaseTable.getForeignKeys(), lines);
+		final String insideCreate = StringUtils.join(lines.toArray(new String[] {}), ",\n");
+		sb.append(insideCreate);
+		sb.append("\n);\n");
+		final List<String> listIndex = createIndexes(databaseTable.getTableIndexes(), databaseTable.getName());
+		sb.append(StringUtils.join(listIndex, "\n"));
+		return sb.toString();
+	}
+
+	private List<String> createIndexes(final List<DatabaseTableIndex> tableIndexes, final String table) {
+		final List<String> list = new ArrayList<>();
+		int indexId = 0;
+		for (final DatabaseTableIndex tableIndex : tableIndexes) {
+			indexId++;
+			final List<String> columns = tableIndex.getColumns();
+			final String columnList = StringUtils.join(columns, ", ");
+			final String unique = tableIndex.isUnique() ? "UNIQUE " : "";
+			final String line = "CREATE " + unique + "INDEX idx_" + table + "_" + indexId + " ON " + table + "(" + columnList
+					+ ");";
+			list.add(line);
+		}
+		return list;
+	}
+
+	private void createForeignKeys(final List<ForeignKey> listForeignKeys, final List<String> lines) {
+		for (final ForeignKey foreignKey : listForeignKeys) {
+			final StringBuilder sb = new StringBuilder();
+			sb.append("\tFOREIGN KEY (" + foreignKey.getColumnName() + ") REFERENCES " + foreignKey.getForeignTable() + " ("
+					+ foreignKey.getForeignColumn() + ") ON DELETE " + decodeRule(foreignKey.getDeleteRule()) + " ON UPDATE "
+					+ decodeRule(foreignKey.getUpdateRule()));
+			lines.add(sb.toString());
+		}
+	}
+
+	private String decodeRule(final short rule) {
+		switch (rule) {
+		case DatabaseMetaData.importedKeyCascade:
+			return "CASCADE";
+		case DatabaseMetaData.importedKeyNoAction:
+		case DatabaseMetaData.importedKeyRestrict:
+			return "RESTRICT";
+		case DatabaseMetaData.importedKeySetNull:
+			return "SET NULL";
+		default:
+			throw new RuntimeException("unknown import key rule:" + rule);
+		}
+	}
+
+	private void createPrimaryKey(final DatabaseTable databaseTable, final List<String> lines) {
+		if (databaseTable.getPrimaryKeyColumns().size() == 0) {
+			throw new RuntimeException("no pk for table " + databaseTable.getName());
+		}
+		lines.add("\t" + primaryKeyLine(databaseTable));
+	}
+
+	private void createColumns(final List<DatabaseColumn> columns, final List<String> lines) {
 		for (final DatabaseColumn databaseColumn : columns) {
 			final List<String> words = new ArrayList<>();
 			words.add(databaseColumn.getColumnName());
@@ -38,14 +96,6 @@ public class InformixSchemaExporter implements SchemaExporter {
 			final String line = "\t" + StringUtils.join(words.toArray(new String[] {}), " ");
 			lines.add(line);
 		}
-		if (databaseTable.getPrimaryKeyColumns().size() == 0) {
-			throw new RuntimeException("no pk for table " + databaseTable.getName());
-		}
-		lines.add("\t" + primaryKeyLine(databaseTable));
-		final String insideCreate = StringUtils.join(lines.toArray(new String[] {}), ",\n");
-		sb.append(insideCreate);
-		sb.append("\n);");
-		return sb.toString();
 	}
 
 	private String primaryKeyLine(final DatabaseTable databaseTable) {

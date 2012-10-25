@@ -13,13 +13,16 @@ public class DatabaseTableServiceImpl implements DatabaseTableService {
 	private final ColumnListService columnListService;
 	private final PrimaryKeyColumnListService primaryKeyColumnListService;
 	private final ForeignKeyListService foreignKeyListService;
+	private final TableIndexService tableIndexService;
 
 	@Autowired
 	public DatabaseTableServiceImpl(final ColumnListService columnListService,
-			final PrimaryKeyColumnListService primaryKeyColumnListService, final ForeignKeyListService foreignKeyListService) {
+			final PrimaryKeyColumnListService primaryKeyColumnListService, final ForeignKeyListService foreignKeyListService,
+			final TableIndexService tableIndexService) {
 		this.columnListService = columnListService;
 		this.primaryKeyColumnListService = primaryKeyColumnListService;
 		this.foreignKeyListService = foreignKeyListService;
+		this.tableIndexService = tableIndexService;
 	}
 
 	@Override
@@ -29,7 +32,7 @@ public class DatabaseTableServiceImpl implements DatabaseTableService {
 		databaseTable.setColumns(columnListService.listColumns(dataSource, tablename));
 		databaseTable.setPrimaryKeyColumns(primaryKeyColumnListService.listPrimaryKeyColumns(dataSource, tablename));
 		databaseTable.setForeignKeys(foreignKeyListService.listForeignKeys(dataSource, tablename));
-		// TODO: set indexes (unique and non-unique)
+		databaseTable.setTableIndexes(tableIndexService.list(dataSource, tablename));
 		return databaseTable;
 	}
 }
