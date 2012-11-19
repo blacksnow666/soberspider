@@ -26,40 +26,65 @@ public class InformixSchemaExporter implements SchemaExporter {
 	private String basicCreate(final DatabaseTable databaseTable) {
 		final List<DatabaseColumn> columns = getSortedColumns(databaseTable);
 		final List<String> lines = new ArrayList<>();
-		final StringBuilder sb = new StringBuilder("CREATE TABLE " + databaseTable.getName() + "\n");
-		sb.append("(\n");
-		createColumns(columns, lines);
-		createPrimaryKey(databaseTable, lines);
+		final StringBuilder sb = new StringBuilder("CREATE TABLE " + databaseTable.getName() + " (\n");
+		sb.append("\n");
+		createColumns(databaseTable, columns, lines);
+		// createPrimaryKey(databaseTable, lines);
 		createForeignKeys(databaseTable.getForeignKeys(), lines);
 		final String insideCreate = StringUtils.join(lines.toArray(new String[] {}), ",\n");
 		sb.append(insideCreate);
 		sb.append("\n);\n");
-		final List<String> listIndex = createIndexes(databaseTable.getTableIndexes(), databaseTable.getName());
+		final List<String> listIndex = createIndexes(databaseTable.getTableIndexes(), databaseTable.getName(),
+				databaseTable.getForeignKeys());
 		sb.append(StringUtils.join(listIndex, "\n"));
 		return sb.toString();
 	}
 
-	private List<String> createIndexes(final List<DatabaseTableIndex> tableIndexes, final String table) {
+	private List<String> createIndexes(final List<DatabaseTableIndex> tableIndexes, final String table,
+			final List<ForeignKey> foreignKeys) {
 		final List<String> list = new ArrayList<>();
 		int indexId = 0;
 		for (final DatabaseTableIndex tableIndex : tableIndexes) {
-			indexId++;
 			final List<String> columns = tableIndex.getColumns();
 			final String columnList = StringUtils.join(columns, ", ");
-			final String unique = tableIndex.isUnique() ? "UNIQUE " : "";
-			final String line = "CREATE " + unique + "INDEX idx_" + table + "_" + indexId + " ON " + table + "(" + columnList
-					+ ");";
-			list.add(line);
+			if (columns.size() == 1 && isForeignKey(columns.get(0), foreignKeys)) {
+				if (!tableIndex.isUnique()) {
+					// foreign key and not unique, index already exist
+					continue;
+				} else {
+					// foreign key is unique, alter table
+					final String line = "ALTER TABLE " + table + " ADD CONSTRAINT UNIQUE (" + columnList + ");";
+					list.add(line);
+				}
+			} else {
+				final String unique = tableIndex.isUnique() ? "UNIQUE " : "";
+				indexId++;
+				final String line = "CREATE " + unique + "INDEX idx_" + table + "_" + indexId + " ON " + table + "(" + columnList
+						+ ");";
+				list.add(line);
+			}
 		}
 		return list;
+	}
+
+	private boolean isForeignKey(final String column, final List<ForeignKey> foreignKeys) {
+		for (final ForeignKey foreignKey : foreignKeys) {
+			if (StringUtils.equals(column, foreignKey.getColumnName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void createForeignKeys(final List<ForeignKey> listForeignKeys, final List<String> lines) {
 		for (final ForeignKey foreignKey : listForeignKeys) {
 			final StringBuilder sb = new StringBuilder();
 			sb.append("\tFOREIGN KEY (" + foreignKey.getColumnName() + ") REFERENCES " + foreignKey.getForeignTable() + " ("
-					+ foreignKey.getForeignColumn() + ") ON DELETE " + decodeRule(foreignKey.getDeleteRule()) + " ON UPDATE "
-					+ decodeRule(foreignKey.getUpdateRule()));
+					+ foreignKey.getForeignColumn() + ")");// + " " +
+															// "ON DELETE " +
+															// decodeRule(foreignKey.getDeleteRule())
+															// + " ON UPDATE "
+			// + decodeRule(foreignKey.getUpdateRule()));
 			lines.add(sb.toString());
 		}
 	}
@@ -85,17 +110,32 @@ public class InformixSchemaExporter implements SchemaExporter {
 		lines.add("\t" + primaryKeyLine(databaseTable));
 	}
 
-	private void createColumns(final List<DatabaseColumn> columns, final List<String> lines) {
+	private void createColumns(final DatabaseTable databaseTable, final List<DatabaseColumn> columns, final List<String> lines) {
 		for (final DatabaseColumn databaseColumn : columns) {
 			final List<String> words = new ArrayList<>();
 			words.add(databaseColumn.getColumnName());
 			words.add(columnType(databaseColumn));
 			if (!databaseColumn.isNullable()) {
 				words.add("NOT NULL");
+				if (isPrimaryKey(databaseTable, databaseColumn)) {
+					words.add("PRIMARY KEY");
+				}
 			}
 			final String line = "\t" + StringUtils.join(words.toArray(new String[] {}), " ");
 			lines.add(line);
 		}
+	}
+
+	private boolean isPrimaryKey(final DatabaseTable databaseTable, final DatabaseColumn databaseColumn) {
+		final List<String> columns = databaseTable.getPrimaryKeyColumns();
+		if (columns.size() != 1) {
+			throw new RuntimeException("composite primary key found for table " + databaseTable.getName());
+		}
+		final String pkColumn = columns.get(0);
+		if (StringUtils.equals(databaseColumn.getColumnName(), pkColumn)) {
+			return true;
+		}
+		return false;
 	}
 
 	private String primaryKeyLine(final DatabaseTable databaseTable) {
@@ -110,7 +150,7 @@ public class InformixSchemaExporter implements SchemaExporter {
 		}
 		switch (databaseColumn.getColumnType()) {
 		case COLUMN_TYPE_VARCHAR:
-			if (databaseColumn.getColumnSize() <= 250) {
+			if (databaseColumn.getColumnSize() <= 256) {
 				return "VARCHAR(" + databaseColumn.getColumnSize() + ")";
 			} else {
 				return "LVARCHAR(" + databaseColumn.getColumnSize() + ")";

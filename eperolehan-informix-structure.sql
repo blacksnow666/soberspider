@@ -823,7 +823,7 @@ CREATE TABLE node_access_state (
 	FOREIGN KEY (id) REFERENCES node_access (id),
 	FOREIGN KEY (state_id) REFERENCES ref_state (id)
 );
-CREATE UNIQUE INDEX idx_node_access_state_1 ON node_access_state(state_id);
+ALTER TABLE node_access_state ADD CONSTRAINT UNIQUE (state_id);
 CREATE TABLE node_committee (
 
 	id SERIAL NOT NULL PRIMARY KEY,
@@ -1037,7 +1037,7 @@ CREATE TABLE vendor_contact (
 	FOREIGN KEY (panggilan) REFERENCES ref_title (id),
 	FOREIGN KEY (vendor_address_code) REFERENCES vendor_address (id)
 );
-CREATE UNIQUE INDEX idx_vendor_contact_1 ON vendor_contact(tauliah_file);
+ALTER TABLE vendor_contact ADD CONSTRAINT UNIQUE (tauliah_file);
 CREATE TABLE vendor_contact_identification (
 
 	vendor_contact_code VARCHAR(12) NOT NULL PRIMARY KEY,
@@ -1152,7 +1152,7 @@ CREATE TABLE node_access_campus (
 	FOREIGN KEY (id) REFERENCES node_access (id),
 	FOREIGN KEY (campus_id) REFERENCES ref_campus (id)
 );
-CREATE UNIQUE INDEX idx_node_access_campus_1 ON node_access_campus(campus_id);
+ALTER TABLE node_access_campus ADD CONSTRAINT UNIQUE (campus_id);
 CREATE TABLE ref_ptj (
 
 	id SERIAL NOT NULL PRIMARY KEY,
@@ -1191,7 +1191,7 @@ CREATE TABLE node_access_ptj (
 	FOREIGN KEY (id) REFERENCES node_access (id),
 	FOREIGN KEY (ptj_id) REFERENCES ref_ptj (id)
 );
-CREATE UNIQUE INDEX idx_node_access_ptj_1 ON node_access_ptj(ptj_id);
+ALTER TABLE node_access_ptj ADD CONSTRAINT UNIQUE (ptj_id);
 CREATE TABLE ref_department (
 
 	id SERIAL NOT NULL PRIMARY KEY,
@@ -1287,7 +1287,7 @@ CREATE TABLE node_access_department (
 	FOREIGN KEY (id) REFERENCES node_access (id),
 	FOREIGN KEY (department_id) REFERENCES ref_department (id)
 );
-CREATE UNIQUE INDEX idx_node_access_department_1 ON node_access_department(department_id);
+ALTER TABLE node_access_department ADD CONSTRAINT UNIQUE (department_id);
 CREATE TABLE node_access_unit (
 
 	id INT NOT NULL PRIMARY KEY,
@@ -1295,7 +1295,7 @@ CREATE TABLE node_access_unit (
 	FOREIGN KEY (id) REFERENCES node_access (id),
 	FOREIGN KEY (unit_id) REFERENCES ref_unit (id)
 );
-CREATE UNIQUE INDEX idx_node_access_unit_1 ON node_access_unit(unit_id);
+ALTER TABLE node_access_unit ADD CONSTRAINT UNIQUE (unit_id);
 CREATE TABLE pb_head (
 
 	id SERIAL NOT NULL PRIMARY KEY,

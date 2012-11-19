@@ -42,7 +42,7 @@ public class RunDropCreateExport {
 			lines.add(content);
 		}
 		final String exportContent = StringUtils.join(lines, "\n");
-		FileUtils.write(new File("informix-schema.sql"), exportContent);
+		FileUtils.write(new File("eperolehan-informix-structure.sql"), exportContent);
 		applicationContext.close();
 	}
 
